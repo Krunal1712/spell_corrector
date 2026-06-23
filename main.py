@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # Load .env file for API Key
-load_dotenv()
+load_dotenv(override=True)
 
 app = FastAPI(title="Gemini AI Spell Corrector")
 
@@ -38,7 +38,7 @@ async def correct_spelling(request: TextRequest):
     try:
         # AI ko configure karna
         genai.configure(api_key=GOOGLE_API_KEY)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-flash-latest')
         
         # AI ko instruction (Prompt) dena
         prompt = f"Please correct the spelling and grammar of the following text. Do not add any extra explanations, just return the corrected text directly:\n\n{original_text}"

@@ -122,8 +122,13 @@ body {
   line-height: 1.5;
 }
 
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .copy-btn {
-  align-self: flex-end;
   background: transparent;
   color: #9ca3af;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -137,6 +142,38 @@ body {
 .copy-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
+}
+
+.listen-btn {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.listen-btn:hover {
+  background: rgba(16, 185, 129, 0.4);
+  color: #fff;
+}
+
+.highlight-added {
+  background-color: rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+  padding: 0 4px;
+  color: #fff;
+}
+
+.highlight-removed {
+  background-color: rgba(239, 68, 68, 0.3);
+  text-decoration: line-through;
+  border-radius: 4px;
+  padding: 0 4px;
+  color: #fca5a5;
+  margin-right: 4px;
 }
 
 @keyframes fadeIn {

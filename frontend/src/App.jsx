@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { diffWords } from 'diff';
 import './index.css';
 
 function App() {
   const [text, setText] = useState('');
+  const [originalTextForDiff, setOriginalTextForDiff] = useState('');
   const [correctedText, setCorrectedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,9 +12,11 @@ function App() {
     if (!text) return;
     
     setIsLoading(true);
+    setOriginalTextForDiff(text);
     try {
-      // Yeh humare Python Backend (FastAPI) ko text bhej raha hai
-      const response = await fetch('http://127.0.0.1:8000/correct-spelling/', {
+      // Backend URL ko dynamic banaya taaki network devices par bhi chale
+      const backendUrl = `http://${window.location.hostname}:8000/correct-spelling/`;
+      const response = await fetch(backendUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,6 +31,31 @@ function App() {
       setCorrectedText("Server connect nahi ho raha. Kya aapne backend (uvicorn main:app --reload) start kiya hai?");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const renderHighlightedText = () => {
+    if (!originalTextForDiff || !correctedText || correctedText.includes("Error")) {
+      return correctedText;
+    }
+    const diffs = diffWords(originalTextForDiff, correctedText);
+    return diffs.map((part, index) => {
+      if (part.added) {
+        return <span key={index} className="highlight-added">{part.value}</span>;
+      }
+      if (part.removed) {
+        return <span key={index} className="highlight-removed">{part.value}</span>;
+      }
+      return <span key={index}>{part.value}</span>;
+    });
+  };
+
+  const handleListen = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(correctedText);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Aapka browser text-to-speech support nahi karta.");
     }
   };
 
@@ -57,14 +86,22 @@ function App() {
           <div className="result-group">
             <h3>Corrected Text:</h3>
             <div className="result-box">
-              {correctedText}
+              {renderHighlightedText()}
             </div>
-            <button 
-              className="copy-btn"
-              onClick={() => navigator.clipboard.writeText(correctedText)}
-            >
-              Copy to Clipboard
-            </button>
+            <div className="action-buttons">
+              <button 
+                className="copy-btn"
+                onClick={() => navigator.clipboard.writeText(correctedText)}
+              >
+                Copy to Clipboard
+              </button>
+              <button 
+                className="listen-btn"
+                onClick={handleListen}
+              >
+                Listen 🔊
+              </button>
+            </div>
           </div>
         )}
       </div>
