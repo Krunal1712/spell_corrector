@@ -1,0 +1,20 @@
+services:
+  # FastAPI Backend Service
+  - type: web
+    name: spell-corrector-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false # Deploy karte waqt Render aapse iski value mangega
+
+  # React Frontend (Static Site) Service
+  - type: web
+    name: spell-corrector-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        sync: false # Deploy karne ke baad, backend ka URL copy karke yahan paste karna hoga

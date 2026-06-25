@@ -14,8 +14,10 @@ function App() {
     setIsLoading(true);
     setOriginalTextForDiff(text);
     try {
-      // Backend URL ko dynamic banaya taaki network devices par bhi chale
-      const backendUrl = `http://${window.location.hostname}:8000/correct-spelling/`;
+      // Backend URL ko env variable ya dynamic hostname ke aadhar par fetch karein
+      const backendUrl = import.meta.env.VITE_BACKEND_URL 
+        ? `${import.meta.env.VITE_BACKEND_URL.replace(/\/$/, '')}/correct-spelling/`
+        : `http://${window.location.hostname}:8000/correct-spelling/`;
       const response = await fetch(backendUrl, {
         method: 'POST',
         headers: {
